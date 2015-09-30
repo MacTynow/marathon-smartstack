@@ -6,6 +6,8 @@ require 'json'
 require 'em-http/middleware/json_response'
 require 'yajl'
 
+# TODO : handle first time service runs
+
 def parse(stream)
   stream.each_line do |line|
     puts line
