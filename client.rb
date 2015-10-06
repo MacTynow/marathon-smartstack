@@ -53,7 +53,7 @@ end
 
 # These should be passed by salt
 zk_hosts = ENV.fetch('ZK_HOSTS')
-hostname = ENV.fetch('HOSTNAME')
+host = ENV.fetch('HOSTNAME')
 ip = ENV.fetch('IP')
 nerve_config_path = ENV.fetch('NERVE') || '/etc/nerve/services/'
 marathon = ENV.fetch('MARATHON')
