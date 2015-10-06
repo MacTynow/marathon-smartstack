@@ -1,29 +1,27 @@
 #!/usr/bin/ruby
 
-require 'em-http'
-require 'em-eventsource'
 require 'json'
-require 'em-http/middleware/json_response'
-require 'socket'
+require 'net/http'
 
-# TODO : handle first time service runs
-
-def parse(stream)
-  stream.each_line do |line|
-    yield JSON.parse line
-  end
+def build_nerve_json(host, zk_hosts, app, task)
+  return {
+    :host => host,
+    :port => task['ports'].join,
+    :reporter_type => "zookeeper",
+    :zk_hosts => zk_hosts.split(','),
+    :zk_path => "/services#{app['id']}",
+    :check_interval => 2,
+    :checks => app['healthChecks']
+  }
 end
 
-def build_nerve_json(host, service, port, zk_hosts, checks )
-  conf = {
-    :host => host,
-    :port => port,
-    :reporter_type => "zookeeper",
-    :zk_hosts => zk_hosts,
-    :zk_path => "/services/#{service}",
-    :check_interval => 2,
-    :checks => checks
+def request(uri)
+  url = URI.parse(uri)
+  req = Net::HTTP::Get.new(url.to_s)
+  res = Net::HTTP.start(url.host, url.port) {|http|
+    http.request(req)
   }
+  return JSON.parse res.body
 end
 
 # This will actually be done when creating a new service...
@@ -41,32 +39,44 @@ end
 #   }
 # end
 
-def write_config(service, conf)
-  target = open('#{service}.json', 'w')
-  target.write (conf)
-  target.close
+def write_config(path, service, conf)
+  puts "Writing #{service} configuration file"
+  File.open("#{service}.json", 'w') do |f|
+    f.write(conf.to_json)
+  end
 end
 
-EM.run do
-  source = EventMachine::EventSource.new("http://#{ENV.fetch('MARATHON')}:8080/v2/events")
-  source.inactivity_timeout = 0
-  source.retry = 1 
-
-  zk_hosts = ENV.fetch('ZK_HOSTS')
-
-  # TODO determine hostname
-  #host = socket.ip_address_list.detect{|intf| intf.ipv4_private?}
-
-  source.message do |message|
-    parsed_message = parse(message)
-    conf = build_nerve_json(host, parsed_message['appId'], parsed_message['port'], zk_hosts, parsed_message['checks'])
-    write_config(parsed_message['appId'], conf)
-    # puts "new message #{message}"
-  end
-
-  source.error do |error|
-    puts "error #{error}"
-  end
-
-  source.start # Start listening
+def delete_config(service)
+  puts "Removing #{service} configuration file"
+  File.delete("#{service}.json") if File.exist?("#{service}.json")
 end
+
+# These should be passed by salt
+zk_hosts = ENV.fetch('ZK_HOSTS')
+hostname = ENV.fetch('HOSTNAME')
+ip = ENV.fetch('IP')
+nerve_config_path = ENV.fetch('NERVE') || '/etc/nerve/services/'
+marathon = ENV.fetch('MARATHON')
+
+apps = request("http://#{marathon}:8080/v2/apps")
+
+apps['apps'].each do |app|
+  target = request("http://#{marathon}:8080/v2/apps/#{app['id']}")
+  wrote_file = false
+  i = 1
+
+  target['app']['tasks'].each do |task|
+    id = target['app']['id'].tr("/", "")
+
+    if task['host'].include?(host)
+      conf = build_nerve_json(host, zk_hosts, app, task)
+      write_config(nerve_config_path, "#{id}#{i}", conf)
+      wrote_file = true
+      i += 1
+    elsif !wrote_file && File.exist?("#{id}.json")
+      delete_config(id)
+    end
+  end
+end
+
+
