@@ -48,7 +48,7 @@ end
 
 def delete_config(path, service)
   puts "Removing #{service} configuration file"
-  File.delete("#{path}/#{service}.json") if File.exist?(File.dirname("#{path}/#{service}.json")
+  File.delete("#{path}/#{service}.json") if File.exist?("#{path}/#{service}.json")
 end
 
 # These should be passed by salt
@@ -78,5 +78,3 @@ apps['apps'].each do |app|
     end
   end
 end
-
-
