@@ -41,7 +41,7 @@ end
 
 def write_config(path, service, conf)
   puts "Writing #{service} configuration file"
-  File.open("#{service}.json", 'w') do |f|
+  File.open(File.dirname("#{nerve_config_path}") + "#{service}.json", 'w') do |f|
     f.write(conf.to_json)
   end
 end
@@ -50,6 +50,9 @@ def delete_config(service)
   puts "Removing #{service} configuration file"
   File.delete("#{service}.json") if File.exist?("#{service}.json")
 end
+
+# TODO : 
+# - write in the right folder
 
 # These should be passed by salt
 zk_hosts = ENV.fetch('ZK_HOSTS')
