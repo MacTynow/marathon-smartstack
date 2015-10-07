@@ -41,14 +41,14 @@ end
 
 def write_config(path, service, conf)
   puts "Writing #{service} configuration file"
-  File.open(File.dirname("#{nerve_config_path}") + "#{service}.json", 'w') do |f|
+  File.open(File.dirname("#{path}") + "#{service}.json", 'w') do |f|
     f.write(conf.to_json)
   end
 end
 
-def delete_config(service)
+def delete_config(path, service)
   puts "Removing #{service} configuration file"
-  File.delete("#{service}.json") if File.exist?("#{service}.json")
+  File.delete(File.dirname("#{path}") + "#{service}.json") if File.exist?(File.dirname("#{path}") + "#{service}.json")
 end
 
 # TODO : 
@@ -77,7 +77,7 @@ apps['apps'].each do |app|
       wrote_file = true
       i += 1
     elsif !wrote_file && File.exist?("#{id}.json")
-      delete_config(id)
+      delete_config(nerve_config_path, id)
     end
   end
 end
