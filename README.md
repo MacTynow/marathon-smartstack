@@ -2,6 +2,8 @@
 
 This tool listens to the marathon events endpoint and reacts according to events.
 
+It is supposed to be run as a cronjob
+
 Environment variables needed : 
   
   + ZK_HOSTS : zookeeper hosts, comma separated list

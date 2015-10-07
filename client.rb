@@ -51,9 +51,6 @@ def delete_config(path, service)
   File.delete(File.dirname("#{path}") + "#{service}.json") if File.exist?(File.dirname("#{path}") + "#{service}.json")
 end
 
-# TODO : 
-# - write in the right folder
-
 # These should be passed by salt
 zk_hosts = ENV.fetch('ZK_HOSTS')
 host = ENV.fetch('HOSTNAME')
