@@ -41,21 +41,21 @@ end
 
 def write_config(path, service, conf)
   puts "Writing #{service} configuration file"
-  File.open(File.dirname("#{path}") + "#{service}.json", 'w') do |f|
+  File.open("#{path}/#{service}.json", 'w') do |f|
     f.write(conf.to_json)
   end
 end
 
 def delete_config(path, service)
   puts "Removing #{service} configuration file"
-  File.delete(File.dirname("#{path}") + "#{service}.json") if File.exist?(File.dirname("#{path}") + "#{service}.json")
+  File.delete("#{path}/#{service}.json") if File.exist?(File.dirname("#{path}/#{service}.json")
 end
 
 # These should be passed by salt
 zk_hosts = ENV.fetch('ZK_HOSTS')
 host = ENV.fetch('HOSTNAME')
 ip = ENV.fetch('IP')
-nerve_config_path = ENV.fetch('NERVE') || '/etc/nerve/services/'
+nerve_config_path = ENV.fetch('NERVE') || '/etc/nerve/services'
 marathon = ENV.fetch('MARATHON')
 
 apps = request("http://#{marathon}:8080/v2/apps")
