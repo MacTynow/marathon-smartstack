@@ -11,7 +11,14 @@ def build_nerve_json(host, zk_hosts, app, task)
     :zk_hosts => zk_hosts.split(','),
     :zk_path => "/services#{app['id']}",
     :check_interval => 2,
-    :checks => app['healthChecks']
+    :checks => [
+      {
+        :type => app['healthChecks']['protocol'].downcase,
+        :uri => app['healthChecks']['path'],
+        :timeout => app['healthChecks']['timeoutSeconds'],
+        :fall => app['healthChecks']['maxConsecutiveFailures']
+      }
+    ]
   }
 end
 
