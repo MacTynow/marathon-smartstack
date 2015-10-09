@@ -6,7 +6,7 @@ require 'net/http'
 def build_nerve_json(host, zk_hosts, app, task)
   return {
     :host => host,
-    :port => task['container']['portMappings']['servicePort'].join,
+    :port => task['ports'].join,
     :reporter_type => "zookeeper",
     :zk_hosts => zk_hosts.split(','),
     :zk_path => "/services#{app['id']}",
