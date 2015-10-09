@@ -6,7 +6,7 @@ require 'net/http'
 def build_nerve_json(host, zk_hosts, app, task)
   return {
     :host => host,
-    :port => task['ports'].join,
+    :port => task['container']['portMappings']['servicePort'].join,
     :reporter_type => "zookeeper",
     :zk_hosts => zk_hosts.split(','),
     :zk_path => "/services#{app['id']}",
@@ -65,10 +65,12 @@ apps['apps'].each do |app|
   wrote_file = false
   i = 1
 
-  target['app']['tasks'].each do |task|
+  target['app']['tasks'].each if target['app']['container'].key?('portMappings') do |task|
     id = target['app']['id'].tr("/", "")
 
-    if task['host'].include?(host)
+    # ONLY WRITE CONFIG FOR SERVICES WITH A SERVICE PORT 
+
+    if task['host'].include?(host) 
       conf = build_nerve_json(host, zk_hosts, app, task)
       write_config(nerve_config_path, "#{id}#{i}", conf)
       wrote_file = true
