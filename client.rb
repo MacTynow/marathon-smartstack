@@ -4,22 +4,24 @@ require 'json'
 require 'net/http'
 
 def build_nerve_json(host, zk_hosts, app, task)
-  return {
-    :host => host,
-    :port => task['ports'].join,
-    :reporter_type => "zookeeper",
-    :zk_hosts => zk_hosts.split(','),
-    :zk_path => "/services#{app['id']}",
-    :check_interval => 2,
-    :checks => [
-      {
-        :type => app['healthChecks']['protocol'].downcase,
-        :uri => app['healthChecks']['path'],
-        :timeout => app['healthChecks']['timeoutSeconds'],
-        :fall => app['healthChecks']['maxConsecutiveFailures']
-      }
-    ]
-  }
+  if app.key?('healthChecks')
+    return {
+      :host => host,
+      :port => task['ports'].join,
+      :reporter_type => "zookeeper",
+      :zk_hosts => zk_hosts.split(','),
+      :zk_path => "/services#{app['id']}",
+      :check_interval => 2,
+      :checks => [
+        {
+          :type => app['healthChecks']['protocol'].downcase,
+          :uri => app['healthChecks']['path'],
+          :timeout => app['healthChecks']['timeoutSeconds'],
+          :fall => app['healthChecks']['maxConsecutiveFailures']
+        }
+      ]
+    }
+  end
 end
 
 def request(uri)
