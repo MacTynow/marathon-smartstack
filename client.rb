@@ -65,18 +65,20 @@ apps['apps'].each do |app|
   wrote_file = false
   i = 1
 
-  target['app']['tasks'].each if target['app']['container'].key?('portMappings') do |task|
-    id = target['app']['id'].tr("/", "")
+  if target['app']['container']['docker'].key?('portMappings')
+    target['app']['tasks'].each do |task|
+      id = target['app']['id'].tr("/", "")
 
-    # ONLY WRITE CONFIG FOR SERVICES WITH A SERVICE PORT 
+      # ONLY WRITE CONFIG FOR SERVICES WITH A SERVICE PORT 
 
-    if task['host'].include?(host) 
-      conf = build_nerve_json(host, zk_hosts, app, task)
-      write_config(nerve_config_path, "#{id}#{i}", conf)
-      wrote_file = true
-      i += 1
-    elsif !wrote_file && File.exist?("#{id}.json")
-      delete_config(nerve_config_path, id)
+      if task['host'].include?(host) 
+        conf = build_nerve_json(host, zk_hosts, app, task)
+        write_config(nerve_config_path, "#{id}#{i}", conf)
+        wrote_file = true
+        i += 1
+      elsif !wrote_file && File.exist?("#{id}.json")
+        delete_config(nerve_config_path, id)
+      end
     end
   end
 end
