@@ -4,7 +4,7 @@ require 'json'
 require 'net/http'
 
 def build_nerve_json(host, zk_hosts, app, task)
-  if app.key?('healthChecks')
+  if ! app.['healthChecks'].empty?
     return {
       :host => host,
       :port => task['ports'].join,
