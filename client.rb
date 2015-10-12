@@ -79,7 +79,7 @@ apps['apps'].each do |app|
 
         if task['host'].include?(host) 
           conf = build_nerve_json(host, zk_hosts, app, task)
-          write_config(host, zk_hosts, target['app'], task)
+          write_config(nerve_config_path, "#{id}#{i}", conf)
           wrote_file = true
           i += 1
         elsif !wrote_file && File.exist?("#{id}.json")
