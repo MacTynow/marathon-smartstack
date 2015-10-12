@@ -13,10 +13,10 @@ def build_nerve_json(host, zk_hosts, app, task)
       :check_interval => 2,
       :checks => [
         {
-          :type => app['healthChecks']['protocol'].downcase,
-          :uri => app['healthChecks']['path'],
-          :timeout => app['healthChecks']['timeoutSeconds'],
-          :fall => app['healthChecks']['maxConsecutiveFailures']
+          :type => app['healthChecks'].first['protocol'].downcase,
+          :uri => app['healthChecks'].first['path'],
+          :timeout => app['healthChecks'].first['timeoutSeconds'],
+          :fall => app['healthChecks'].first['maxConsecutiveFailures']
         }
       ]
     }
