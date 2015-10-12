@@ -69,7 +69,7 @@ apps = request("http://#{marathon}:8080/v2/apps")
 
 apps['apps'].each do |app|
   target = request("http://#{marathon}:8080/v2/apps/#{app['id']}")
-  if target['healthChecks'].empty? == false
+  if target['app']['healthChecks'].empty? == false
     wrote_file = false
     i = 1
 
