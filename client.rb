@@ -4,7 +4,6 @@ require 'json'
 require 'net/http'
 
 def build_nerve_json(host, zk_hosts, app, task)
-  if app['healthChecks'].empty? == false
     return {
       :host => host,
       :port => task['ports'].join,
@@ -21,9 +20,6 @@ def build_nerve_json(host, zk_hosts, app, task)
         }
       ]
     }
-  else
-    puts "Not writing conf for #{app['id']} since there is no healthChecks configured in marathon"
-  end
 end
 
 def request(uri)
@@ -73,23 +69,26 @@ apps = request("http://#{marathon}:8080/v2/apps")
 
 apps['apps'].each do |app|
   target = request("http://#{marathon}:8080/v2/apps/#{app['id']}")
-  wrote_file = false
-  i = 1
+  if target['healthChecks'].empty? == false
+    wrote_file = false
+    i = 1
 
-  if target['app']['container']['docker'].key?('portMappings')
-    target['app']['tasks'].each do |task|
-      id = target['app']['id'].tr("/", "")
+    if target['app']['container']['docker'].key?('portMappings')
+      target['app']['tasks'].each do |task|
+        id = target['app']['id'].tr("/", "")
 
-      # ONLY WRITE CONFIG FOR SERVICES WITH A SERVICE PORT 
+        # ONLY WRITE CONFIG FOR SERVICES WITH A SERVICE PORT 
 
-      if task['host'].include?(host) 
-        conf = build_nerve_json(host, zk_hosts, app, task)
-        write_config(nerve_config_path, "#{id}#{i}", conf)
-        wrote_file = true
-        i += 1
-      elsif !wrote_file && File.exist?("#{id}.json")
-        delete_config(nerve_config_path, id)
+        if task['host'].include?(host) 
+          conf = build_nerve_json(host, zk_hosts, app, task)
+          wrote_file = true
+          i += 1
+        elsif !wrote_file && File.exist?("#{id}.json")
+          delete_config(nerve_config_path, id)
+        end
       end
     end
+  else
+    puts "Not writing conf for #{app['id']} since there is no healthChecks configured in marathon"
   end
 end
