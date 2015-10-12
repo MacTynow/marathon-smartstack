@@ -78,7 +78,7 @@ apps['apps'].each do |app|
         id = target['app']['id'].tr("/", "")
 
         if task['host'].include?(host) 
-          conf = build_nerve_json(host, zk_hosts, app, task)
+          conf = build_nerve_json(ip, zk_hosts, app, task)
           write_config(nerve_config_path, "#{id}#{i}", conf)
           wrote_file = true
           i += 1
