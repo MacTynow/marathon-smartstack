@@ -4,7 +4,7 @@ require 'json'
 require 'net/http'
 
 def build_nerve_json(host, zk_hosts, app, task)
-  if ! app.['healthChecks'].empty?
+  if app['healthChecks'].empty? == false
     return {
       :host => host,
       :port => task['ports'].join,
@@ -21,6 +21,8 @@ def build_nerve_json(host, zk_hosts, app, task)
         }
       ]
     }
+  else
+    puts "Not writing conf for #{app['id']} since there is no healthChecks configured in marathon"
   end
 end
 
