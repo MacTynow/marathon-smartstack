@@ -77,10 +77,9 @@ apps['apps'].each do |app|
       target['app']['tasks'].each do |task|
         id = target['app']['id'].tr("/", "")
 
-        # ONLY WRITE CONFIG FOR SERVICES WITH A SERVICE PORT 
-
         if task['host'].include?(host) 
           conf = build_nerve_json(host, zk_hosts, app, task)
+          write_config(host, zk_hosts, target['app'], task)
           wrote_file = true
           i += 1
         elsif !wrote_file && File.exist?("#{id}.json")
