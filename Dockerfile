@@ -1,5 +1,7 @@
 FROM alpine
 
+MAINTAINER charles.martinot@activision.com
+
 RUN apk --update add ruby ruby-dev build-base
 
 RUN gem install bundler

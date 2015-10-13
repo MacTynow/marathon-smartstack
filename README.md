@@ -16,4 +16,4 @@ Environment variables needed :
 
 For now it : 
   
-  + Rewrites Nerve/Synapse configuration files based on marathon events.
+  + Rewrites Nerve/Synapse configuration files based on marathon events (works only with docker containers)

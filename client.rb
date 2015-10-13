@@ -82,7 +82,7 @@ apps['apps'].each do |app|
           write_config(nerve_config_path, "#{id}#{i}", conf)
           wrote_file = true
           i += 1
-        elsif !wrote_file && File.exist?("#{id}.json")
+        elsif wrote_file == false && File.exist?("#{nerve_config_path}/#{id}.json")
           delete_config(nerve_config_path, id)
         end
       end
