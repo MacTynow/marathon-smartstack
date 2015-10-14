@@ -31,21 +31,6 @@ def request(uri)
   return JSON.parse res.body
 end
 
-# This will actually be done when creating a new service...
-# def build_synapse_json(service, zk_hosts, ha_port)
-#   conf = {
-#     :discovery => {
-#       :method => "zookeeper",
-#       :path => "/services/#{service}",
-#       :hosts => zk_hosts
-#     },
-#     :haproxy => {
-#       :port => ha_port,
-#       :listen => ["mode http"]
-#     }
-#   }
-# end
-
 def write_config(path, service, conf)
   puts "Writing #{service} configuration file"
   File.open("#{path}/#{service}.json", 'w') do |f|
@@ -82,7 +67,7 @@ apps['apps'].each do |app|
           write_config(nerve_config_path, "#{id}#{i}", conf)
           wrote_file = true
           i += 1
-        elsif wrote_file == false && File.exist?("#{nerve_config_path}/#{id}.json")
+        elsif wrote_file == false && File.exist?("#{nerve_config_path}/#{id}.json") # HERE NEED TO HANDLE FILE NAMES WITH NUMBER like cohort1.json
           delete_config(nerve_config_path, id)
         end
       end
