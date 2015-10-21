@@ -12,4 +12,4 @@ COPY Gemfile.lock Gemfile.lock
 RUN bundle install
 COPY . /root
 
-CMD [ "./client.rb" ]
+CMD [ "./main.rb" ]
