@@ -5,7 +5,7 @@ require 'net/http'
 require './client.rb'
 
 # These should be passed by salt
-ichnaea = Ichnaea.new()
+ichnaea = Ichnaea.new
 
 zk_hosts = ENV.fetch('ZK_HOSTS')
 host = ENV.fetch('HOSTNAME')
