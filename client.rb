@@ -23,7 +23,6 @@ class Ichnaea
       }
   end
 
-  # TEST THIS
   def build_synapse_json(zk_hosts, app)
     return {
       :discovery => {
