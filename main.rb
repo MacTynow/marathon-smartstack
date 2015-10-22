@@ -18,7 +18,7 @@ apps = ichnaea.request("http://#{marathon}:8080/v2/apps")
 
 apps['apps'].each do |app|
   synapse_conf = ichnaea.build_synapse_json(zk_hosts, app)
-  ichnaea.write_config(synapse_config_path, app['app']['id'], synapse_conf)
+  ichnaea.write_config(synapse_config_path, app['id'], synapse_conf)
 
   target = ichnaea.request("http://#{marathon}:8080/v2/apps/#{app['id']}")
   if target['app']['healthChecks'].empty? == false
