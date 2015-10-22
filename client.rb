@@ -32,7 +32,7 @@ class Ichnaea
         :hosts => zk_hosts.split(',')
         },
       :haproxy => {
-        :port => app['container']['docker']['portMappings']['servicePort'],
+        :port => app['container']['docker']['portMappings'].first['servicePort'],
         :server_options => "check inter 2s rise 3 fall 2",
         :listen => [
           "mode http"
