@@ -18,10 +18,11 @@ apps = ichnaea.request("http://#{marathon}:8080/v2/apps")
 apps['apps'].each do |app|
   target = ichnaea.request("http://#{marathon}:8080/v2/apps/#{app['id']}")
   if target['app']['healthChecks'].empty? == false
+    i = 1
+
     if target['app']['container']['docker'].key?('portMappings')
       target['app']['tasks'].each do |task|
         # wrote_file = false
-        i = 1
         id = target['app']['id'].tr("/", "")
 
         if File.exist?("#{synapse_config_path}/#{id}.json}") == false
@@ -36,7 +37,7 @@ apps['apps'].each do |app|
           i += 1
         # elsif wrote_file == false && File.exist?("#{nerve_config_path}/#{id}#{i}.json")
         elsif File.exist?("#{nerve_config_path}/#{id}#{i}.json")
-          ichnaea.delete_config(nerve_config_path, id)
+          ichnaea.delete_config(nerve_config_path, "#{id}#{i}")
         end
       end
     end
