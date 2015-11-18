@@ -36,7 +36,7 @@ apps['apps'].each do |app|
           # wrote_file = true
           i += 1
         # elsif wrote_file == false && File.exist?("#{nerve_config_path}/#{id}#{i}.json")
-        elsif File.exist?("#{nerve_config_path}/#{id}#{i}.json")
+        elsif task['host'].include?(host) == false && File.exist?("#{nerve_config_path}/#{id}#{i}.json")
           ichnaea.delete_config(nerve_config_path, "#{id}#{i}")
         end
       end
