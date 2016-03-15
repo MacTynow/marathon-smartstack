@@ -17,3 +17,9 @@ Environment variables needed :
 For now it : 
   
   + Rewrites Nerve/Synapse configuration files based on marathon events (works only with docker containers)
+
+This is supposed to be used in combination with the following containers : 
+  
+  + https://github.com/MacTynow/docker-nerve
+  + https://github.com/claydotio/synapse
+  + https://github.com/claydotio/synapse
