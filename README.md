@@ -1,4 +1,4 @@
-### Ichnaea
+### Marathon-smartstack
 
 This tool listens to the marathon events endpoint and reacts according to events.
 
@@ -23,3 +23,5 @@ This is supposed to be used in combination with the following containers :
   + https://github.com/MacTynow/docker-nerve
   + https://github.com/claydotio/synapse
   + https://github.com/claydotio/synapse
+
+http://nerds.airbnb.com/smartstack-service-discovery-cloud/
